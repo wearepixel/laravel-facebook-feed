@@ -1,0 +1,26 @@
+{
+    "name": "wearepixel/laravel-facebook-feed",
+    "type": "library",
+    "description": "Laravel Facebook Feed",
+    "keywords": [
+        "laravel",
+        "laravel-facebook-feed"
+    ],
+    "version": "3.0.0",
+    "homepage": "https://github.com/wearepixel/laravel-facebook-feed",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Pixel",
+            "email": "hello@wearepixel.com.au"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Wearepixel\\LaravelFacebookFeed\\" : "src/" }
+    },
+    "require": {
+        "spatie/array-to-xml": "2.8.*|3.*.*",
+        "illuminate/support": "8.*|9.*"
+    },
+    "prefer-stable": true
+}
