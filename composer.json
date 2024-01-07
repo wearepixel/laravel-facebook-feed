@@ -6,7 +6,7 @@
         "laravel",
         "laravel-facebook-feed"
     ],
-    "version": "1.0.2",
+    "version": "2.0.0",
     "homepage": "https://github.com/wearepixel/laravel-facebook-feed",
     "license": "MIT",
     "authors": [
@@ -20,7 +20,7 @@
     },
     "require": {
         "spatie/array-to-xml": "2.8.*|3.*.*",
-        "illuminate/support": "8.*|9.*"
+        "illuminate/support": "8.*|9.*|10.*|11.*"
     },
     "prefer-stable": true
 }
