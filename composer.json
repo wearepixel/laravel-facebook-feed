@@ -1,26 +1,46 @@
 {
-    "name": "wearepixel/laravel-facebook-feed",
-    "type": "library",
-    "description": "Laravel Facebook Feed",
-    "keywords": [
-        "laravel",
-        "laravel-facebook-feed"
-    ],
-    "version": "2.0.0",
-    "homepage": "https://github.com/wearepixel/laravel-facebook-feed",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Pixel",
-            "email": "hello@wearepixel.com.au"
-        }
-    ],
-    "autoload": {
-        "psr-4": { "Wearepixel\\LaravelFacebookFeed\\" : "src/" }
-    },
-    "require": {
-        "spatie/array-to-xml": "2.8.*|3.*.*",
-        "illuminate/support": "8.*|9.*|10.*|11.*"
-    },
-    "prefer-stable": true
+  "name": "wearepixel/laravel-facebook-feed",
+  "type": "library",
+  "description": "Laravel Facebook Feed",
+  "keywords": [
+    "laravel",
+    "laravel-facebook-feed"
+  ],
+  "version": "2.0.0",
+  "homepage": "https://github.com/wearepixel/laravel-facebook-feed",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Pixel",
+      "email": "hello@wearepixel.com.au"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Wearepixel\\LaravelFacebookFeed\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=8.4",
+    "spatie/array-to-xml": "2.8.*|3.*",
+    "illuminate/support": "10.*|11.*|12.*|13.*"
+  },
+  "require-dev": {
+    "pestphp/pest": "^4.0",
+    "orchestra/testbench": "^10.0"
+  },
+  "scripts": {
+    "test": "vendor/bin/pest"
+  },
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
 }
