@@ -1,31 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Wearepixel\LaravelFacebookFeed;
 
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Response as ResponseFacade;
 use Spatie\ArrayToXml\ArrayToXml;
+use Wearepixel\LaravelFacebookFeed\Exceptions\MissingRequiredFieldException;
 
 class LaravelFacebookFeed
 {
-    public $title;
-    public $description;
-    public $link;
+    public readonly string $title;
+    public readonly string $description;
+    public readonly string $link;
 
-    protected $xml = [];
-    protected $products = [];
-    protected $currency = "AUD";
+    protected array $products = [];
 
-    protected $requiredProductFields = [
+    protected const array REQUIRED_PRODUCT_FIELDS = [
         'id',
         'link',
         'title',
         'price',
-        'image_link'
+        'image_link',
     ];
 
-    public static function init($title = null, $description = null, $link = null)
+    public static function init(string $title = '', string $description = '', string $link = ''): static
     {
-        $feed = new self();
-
+        $feed = new static;
         $feed->title = $title;
         $feed->description = $description;
         $feed->link = $link;
@@ -33,26 +35,20 @@ class LaravelFacebookFeed
         return $feed;
     }
 
-    public function addItem(array $item): bool
+    public function addItem(array $item): void
     {
-        foreach ($this->requiredProductFields as $field) {
-            if (!isset($item[$field])) {
-                throw new \Exception("Required field '{$field}' is missing");
+        foreach (self::REQUIRED_PRODUCT_FIELDS as $field) {
+            if (! isset($item[$field])) {
+                throw new MissingRequiredFieldException("Required field '{$field}' is missing");
             }
         }
 
-        foreach ($item as $key => $value) {
-            $product[$key] = $value;
-        }
-
-        $this->products[] = $product;
-
-        return true;
+        $this->products[] = $item;
     }
 
-    public function generate()
+    public function toXml(): string
     {
-        $this->xml = [
+        $data = [
             'rss' => [
                 '_attributes' => [
                     'xmlns:g' => 'http://base.google.com/ns/1.0',
@@ -62,23 +58,25 @@ class LaravelFacebookFeed
                     'title' => $this->title,
                     'description' => $this->description,
                     'link' => $this->link,
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($this->products as $key => $product) {
-            $this->xml['rss']['channel']['item_'.$key] = $product;
+            $data['rss']['channel']['item_' . $key] = $product;
         }
 
-        $xml = ArrayToXml::convert($this->xml, '');
+        $xml = ArrayToXml::convert($data, '');
         $xml = str_replace(['    ', '<root>', '</root>', "\n", "\r", '<remove>remove</remove>'], '', $xml);
-        $xml = preg_replace([
-            "/item_[0-9][0-9][0-9][0-9]/",
-            "/item_[0-9][0-9][0-9]/",
-            "/item_[0-9][0-9]/",
-            "/item_[0-9]/",
-        ], "item", $xml);
+        // spatie/array-to-xml does not support repeated keys, so products are keyed as
+        // item_0, item_1, etc. and renamed back to <item> tags here.
+        $xml = (string) preg_replace('/item_\d+/', 'item', $xml);
 
-        return response($xml)->header('Content-Type', 'text/xml');
+        return $xml;
+    }
+
+    public function generate(): Response
+    {
+        return ResponseFacade::make($this->toXml(), headers: ['Content-Type' => 'application/rss+xml']);
     }
 }
